@@ -5,7 +5,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random Messages</title>
     <link rel="icon" href="favicon.png" type="image/png">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #000;
+            color: #00ff00;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #000;
+            color: #00ff00;
+            padding: 20px;
+            border: 2px solid #00ff00;
+            width: 100%;
+            max-width: 800px;
+        }
+        .ascii-art {
+            white-space: pre;
+            font-size: 12px;
+            text-align: center;
+            margin: 0.5rem 0;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .messages {
+            border: 1px solid #00ff00;
+            height: 400px;
+            overflow-y: scroll;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #000;
+        }
+        .message-item {
+            margin: 5px 0;
+            padding: 5px;
+            background-color: #003300;
+            border-bottom: 1px solid #2a2a2a;
+            word-break: break-word;
+        }
+        .message-item:last-child {
+            border-bottom: none;
+        }
+        .message-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.25rem;
+            font-size: 0.75rem;
+        }
+        .message-content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .username {
+            font-weight: bold;
+            margin-right: 0.25rem;
+        }
+        .ip-label {
+            font-size: 0.7rem;
+            opacity: 0.8;
+            color: #00cc00;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 5px;
+            background-color: #000;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 0.375rem;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #003300;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 0.375rem;
+        }
+        button:hover {
+            background-color: #006600;
+        }
+        img.flag {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 6px;
+            object-fit: cover;
+        }
+        img.map {
+            width: 20px;
+            height: 14px;
+            vertical-align: middle;
+            margin-right: 6px;
+            object-fit: cover;
+        }
+        .messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        .messages::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        .messages::-webkit-scrollbar-thumb {
+            background: #00ff00;
+            border-radius: 3px;
+        }
+        @media (max-width: 640px) {
+            .container {
+                padding: 15px;
+            }
+            .messages {
+                height: 300px;
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+            input[type="text"], button {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+            .ascii-art {
+                font-size: 10px;
+            }
+        }
+        @media (max-width: 400px) {
+            .message-content {
+                flex-direction: column;
+            }
+            .username {
+                margin-bottom: 0.25rem;
+            }
+            .input-area {
+                flex-direction: column;
+                gap: 5px;
+            }
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <pre class="ascii-art">
+░█▀▀▄░█▀▀▄░█▀▀▄░█▀▄░▄▀▀▄░█▀▄▀█░░░█▀▄▀█░█▀▀▄░█▀▀░█▀▀░█▀▀▄░█▀▀▀░█▀▀░█▀▀
+░█▄▄▀░█▄▄█░█░▒█░█░█░█░░█░█░▀░█░░░█░▀░█░█▄▄█░▀▀▄░▀▀▄░█▄▄█░█░▀▄░█▀▀░▀▀▄
+░▀░▀▀░▀░░▀░▀░░▀░▀▀░░░▀▀░░▀░░▒▀░░░▀░░▒▀░▀░░▀░▀▀▀░▀▀▀░▀░░▀░▀▀▀▀░▀▀▀░▀▀▀
+        </pre>
+        <h1>Random Messages</h1>
+        
+        <div class="input-group">
+            <input id="usernameInput" type="text" placeholder="Enter your username..." maxlength="20">
+        </div>
+        
+        <div id="messages" class="messages"></div>
+        
+        <div class="input-area">
+            <input id="messageInput" type="text" placeholder="Type your message..." maxlength="200">
+            <button id="sendButton">Send</button>
+        </div>
+    </div>
+
     <script type="module">
         // Import Firebase SDK
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
@@ -121,7 +300,7 @@
             const messageElement = document.createElement('div');
             messageElement.className = 'message-item';
             
-            const isRegion = ['americas.png', 'africa.png', 'asia.png', 'australia.png'].includes(data.flag);
+            const isRegion = ['americas.png', 'africa.png', 'asia.png', 'australia.png', 'eu.png'].includes(data.flag);
             const flagClass = isRegion ? 'map' : 'flag';
             
             messageElement.innerHTML = `
@@ -144,175 +323,5 @@
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         });
     </script>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            background-color: #1a1a1a;
-            color: #00ff00;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 0;
-            margin: 0;
-            min-height: 100vh;
-        }
-        .container {
-            width: 100%;
-            max-width: 100%;
-            padding: 1rem;
-        }
-        #messages {
-            max-height: 60vh;
-            overflow-y: auto;
-            scroll-behavior: smooth;
-            padding: 0.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid #00ff00;
-            border-radius: 0.375rem;
-        }
-        .message-item {
-            margin-bottom: 0.75rem;
-            padding: 0.5rem;
-            border-bottom: 1px solid #2a2a2a;
-            word-break: break-word;
-        }
-        .message-item:last-child {
-            border-bottom: none;
-        }
-        .message-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.25rem;
-            font-size: 0.75rem;
-        }
-        .message-content {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .username {
-            font-weight: bold;
-            margin-right: 0.25rem;
-        }
-        .ip-label {
-            font-size: 0.7rem;
-            opacity: 0.8;
-        }
-        #messages::-webkit-scrollbar {
-            width: 6px;
-        }
-        #messages::-webkit-scrollbar-track {
-            background: #1a1a1a;
-        }
-        #messages::-webkit-scrollbar-thumb {
-            background: #00ff00;
-            border-radius: 3px;
-        }
-        input, button {
-            background-color: #2a2a2a;
-            color: #00ff00;
-            border: 1px solid #00ff00;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-            font-size: 1rem;
-        }
-        input:focus, button:focus {
-            outline: none;
-            border-color: #00cc00;
-        }
-        button:hover {
-            background-color: #00cc00;
-            color: #1a1a1a;
-        }
-        img.flag {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            vertical-align: middle;
-            margin-right: 6px;
-            object-fit: cover;
-        }
-        img.map {
-            width: 20px;
-            height: 14px;
-            vertical-align: middle;
-            margin-right: 6px;
-            object-fit: cover;
-        }
-        .input-group {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-        .message-input-group {
-            display: flex;
-            gap: 0.5rem;
-        }
-        .ascii-art {
-            font-size: 0.5rem;
-            line-height: 1.2;
-            margin: 0.5rem 0;
-            overflow-x: auto;
-            white-space: pre;
-            text-align: center;
-            max-width: 100%;
-        }
-        @media (max-width: 640px) {
-            .container {
-                padding: 0.5rem;
-            }
-            #messages {
-                max-height: 55vh;
-                padding: 0.25rem;
-                font-size: 0.9rem;
-            }
-            input, button {
-                padding: 0.5rem;
-                font-size: 0.9rem;
-            }
-            button {
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
-            }
-            .ascii-art {
-                font-size: 0.4rem;
-            }
-            .message-header {
-                flex-wrap: wrap;
-            }
-            .ip-label {
-                font-size: 0.65rem;
-            }
-        }
-        @media (max-width: 400px) {
-            .message-content {
-                flex-direction: column;
-            }
-            .username {
-                margin-bottom: 0.25rem;
-            }
-        }
-    </style>
-</head>
-<body class="flex flex-col items-center justify-start min-h-screen p-2 sm:p-4">
-    <div class="container max-w-2xl mx-auto">
-        <div class="ascii-art">
-░█▀▀▄░█▀▀▄░█▀▀▄░█▀▄░▄▀▀▄░█▀▄▀█░░░█▀▄▀█░█▀▀▄░█▀▀░█▀▀░█▀▀▄░█▀▀▀░█▀▀░█▀▀
-░█▄▄▀░█▄▄█░█░▒█░█░█░█░░█░█░▀░█░░░█░▀░█░█▄▄█░▀▀▄░▀▀▄░█▄▄█░█░▀▄░█▀▀░▀▀▄
-░▀░▀▀░▀░░▀░▀░░▀░▀▀░░░▀▀░░▀░░▒▀░░░▀░░▒▀░▀░░▀░▀▀▀░▀▀▀░▀░░▀░▀▀▀▀░▀▀▀░▀▀▀
-        </div>
-        <h1 class="text-xl sm:text-2xl font-bold mb-3 text-center">Random Messages</h1>
-        
-        <div class="input-group">
-            <input id="usernameInput" type="text" class="flex-1" placeholder="Enter your username..." maxlength="20">
-        </div>
-        
-        <div id="messages" class="mb-3"></div>
-        
-        <div class="message-input-group">
-            <input id="messageInput" type="text" class="flex-1" placeholder="Type your message..." maxlength="200">
-            <button id="sendButton" class="px-3 sm:px-4">Send</button>
-        </div>
-    </div>
 </body>
 </html>
