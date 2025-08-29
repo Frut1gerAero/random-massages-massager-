@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Messages</title>
+    <title>IDFK HOW TO NAME IT</title>
     <link rel="icon" href="favicon.png" type="image/png">
     <style>
         * {
@@ -27,13 +27,18 @@
             width: 100%;
             max-width: 800px;
         }
-        .ascii-art {
-            white-space: pre;
-            font-size: 12px;
+        .logo-container {
             text-align: center;
             margin: 0.5rem 0;
-            overflow-x: auto;
             max-width: 100%;
+        }
+        .logo {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border: 1px solid #00ff00;
+            padding: 5px;
         }
         h1 {
             text-align: center;
@@ -143,9 +148,6 @@
                 padding: 8px;
                 font-size: 0.9rem;
             }
-            .ascii-art {
-                font-size: 10px;
-            }
         }
         @media (max-width: 400px) {
             .message-content {
@@ -166,12 +168,10 @@
 </head>
 <body>
     <div class="container">
-        <pre class="ascii-art">
-░█▀▀▄░█▀▀▄░█▀▀▄░█▀▄░▄▀▀▄░█▀▄▀█░░░█▀▄▀█░█▀▀▄░█▀▀░█▀▀░█▀▀▄░█▀▀▀░█▀▀░█▀▀
-░█▄▄▀░█▄▄█░█░▒█░█░█░█░░█░█░▀░█░░░█░▀░█░█▄▄█░▀▀▄░▀▀▄░█▄▄█░█░▀▄░█▀▀░▀▀▄
-░▀░▀▀░▀░░▀░▀░░▀░▀▀░░░▀▀░░▀░░▒▀░░░▀░░▒▀░▀░░▀░▀▀▀░▀▀▀░▀░░▀░▀▀▀▀░▀▀▀░▀▀▀
-        </pre>
-        <h1>Random Messages</h1>
+        <div class="logo-container">
+            <img src="images/logo.jpg" alt="IDFK HOW TO NAME IT" class="logo">
+        </div>
+        <h1>IDFK HOW TO NAME IT</h1>
         
         <div class="input-group">
             <input id="usernameInput" type="text" placeholder="Enter your username..." maxlength="20">
